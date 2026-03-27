@@ -11,8 +11,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     API.get("/products/dashboard/summary")
-      .then(res => setData(res.data))
-      .catch(err => console.log(err));
+      .then((res) => setData(res.data))
+      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -22,8 +22,8 @@ export default function Dashboard() {
       <div style={styles.content}>
         <h1 style={styles.heading}>Dashboard 📊</h1>
 
-        {/* Cards */}
-        <div style={styles.cardContainer}>
+        {/* 🔹 Cards */}
+        <div style={styles.cards}>
           <div style={styles.card}>
             <p>Total Products</p>
             <h2>{data.totalProducts}</h2>
@@ -35,32 +35,30 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Low Stock Section */}
+        {/* 🔹 Low Stock Table */}
         <div style={styles.tableBox}>
-          <h2>Low Stock Items ⚠️</h2>
+          <h2 style={styles.subHeading}>Low Stock Items ⚠️</h2>
 
           {data.lowStock.length === 0 ? (
-            <p style={{ marginTop: "10px" }}>
-              No low stock items 🎉
-            </p>
+            <p>No low stock items 🎉</p>
           ) : (
             <table style={styles.table}>
               <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>SKU</th>
-                  <th>Quantity</th>
+                <tr style={styles.theadRow}>
+                  <th style={styles.th}>Name</th>
+                  <th style={styles.th}>SKU</th>
+                  <th style={styles.th}>Quantity</th>
+                  <th style={styles.th}>Threshold</th>
                 </tr>
               </thead>
 
               <tbody>
                 {data.lowStock.map((p) => (
-                  <tr key={p._id}>
-                    <td>{p.name}</td>
-                    <td>{p.sku}</td>
-                    <td style={styles.lowStock}>
-                      {p.quantity}
-                    </td>
+                  <tr key={p._id} style={styles.tr}>
+                    <td style={styles.td}>{p.name}</td>
+                    <td style={styles.td}>{p.sku}</td>
+                    <td style={styles.qty}>{p.quantity}</td>
+                    <td style={styles.td}>{p.threshold}</td>
                   </tr>
                 ))}
               </tbody>
@@ -72,11 +70,11 @@ export default function Dashboard() {
   );
 }
 
-// 🎨 Styles
+// 🎨 STYLES (CLEAN + PROFESSIONAL)
 const styles = {
   container: {
-    minHeight: "100vh",
-    background: "#f4f6f8"
+    background: "#f4f6f8",
+    minHeight: "100vh"
   },
   content: {
     padding: "20px"
@@ -84,10 +82,12 @@ const styles = {
   heading: {
     marginBottom: "20px"
   },
-  cardContainer: {
+
+  // 🔹 Cards
+  cards: {
     display: "flex",
     gap: "20px",
-    marginBottom: "30px"
+    marginBottom: "25px"
   },
   card: {
     flex: 1,
@@ -96,18 +96,40 @@ const styles = {
     borderRadius: "12px",
     boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
   },
+
+  // 🔹 Table
   tableBox: {
     background: "#fff",
     padding: "20px",
     borderRadius: "12px",
     boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
   },
+  subHeading: {
+    marginBottom: "10px"
+  },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    marginTop: "15px"
+    marginTop: "10px"
   },
-  lowStock: {
+  theadRow: {
+    background: "#f1f5f9"
+  },
+  th: {
+    textAlign: "left",
+    padding: "12px",
+    borderBottom: "2px solid #e5e7eb"
+  },
+  td: {
+    padding: "12px",
+    borderBottom: "1px solid #e5e7eb"
+  },
+  tr: {
+    transition: "0.2s"
+  },
+  qty: {
+    padding: "12px",
+    borderBottom: "1px solid #e5e7eb",
     color: "red",
     fontWeight: "bold"
   }

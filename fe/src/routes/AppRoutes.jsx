@@ -15,6 +15,7 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/products" element={<Products />} />
         <Route path="/add-product" element={<ProductForm />} />
+        <Route path="/edit-product/:id" element={<ProductForm />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>

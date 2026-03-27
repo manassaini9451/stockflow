@@ -5,18 +5,40 @@ import { useNavigate, Link } from "react-router-dom";
 export default function Login() {
   const nav = useNavigate();
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [data, setData] = useState({
     email: "",
     password: ""
   });
 
+  const [error, setError] = useState("");
+
+  // ✅ EMAIL VALIDATION FUNCTION
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleLogin = async () => {
+    // ✅ VALIDATION
+    if (!data.email || !data.password) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (!isValidEmail(data.email)) {
+      setError("Enter a valid email address");
+      return;
+    }
+
+    setError("");
+
     try {
       const res = await API.post("/auth/login", data);
       localStorage.setItem("token", res.data.token);
       nav("/dashboard");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -33,14 +55,27 @@ export default function Login() {
           }
         />
 
-        <input
-          style={styles.input}
-          type="password"
-          placeholder="Password"
-          onChange={(e) =>
-            setData({ ...data, password: e.target.value })
-          }
-        />
+        {/* PASSWORD */}
+        <div style={styles.passwordBox}>
+          <input
+            style={styles.passwordInput}
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            onChange={(e) =>
+              setData({ ...data, password: e.target.value })
+            }
+          />
+
+          <span
+            style={styles.eye}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </span>
+        </div>
+
+        {/* ❌ ERROR MESSAGE */}
+        {error && <p style={styles.error}>{error}</p>}
 
         <button style={styles.button} onClick={handleLogin}>
           Login
@@ -74,7 +109,7 @@ const styles = {
     boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
     display: "flex",
     flexDirection: "column",
-    gap: "15px"
+    gap: "12px"
   },
   title: {
     textAlign: "center",
@@ -86,6 +121,31 @@ const styles = {
     border: "1px solid #ccc",
     outline: "none"
   },
+  passwordBox: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center"
+  },
+  passwordInput: {
+    width: "100%",
+    padding: "12px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    outline: "none"
+  },
+  eye: {
+    position: "absolute",
+    right: "10px",
+    cursor: "pointer"
+  },
+
+  // ❌ ERROR STYLE
+  error: {
+    color: "red",
+    fontSize: "13px",
+    marginTop: "-5px"
+  },
+
   button: {
     padding: "12px",
     borderRadius: "8px",
